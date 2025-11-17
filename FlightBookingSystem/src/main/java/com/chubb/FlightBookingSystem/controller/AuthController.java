@@ -9,7 +9,7 @@ import com.chubb.FlightBookingSystem.model.User;
 import com.chubb.FlightBookingSystem.service.UserService;
 
 import jakarta.validation.Valid;
-
+ 
 @RestController
 public class AuthController {
 	@Autowired
