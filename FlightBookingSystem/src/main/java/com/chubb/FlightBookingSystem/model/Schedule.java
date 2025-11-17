@@ -12,6 +12,8 @@ import com.chubb.FlightBookingSystem.dto.ScheduleRequestDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -27,7 +29,7 @@ public class Schedule {
 	private int id;
 	
 	@NotBlank
-	private String flightName;
+	private String airlineName;
 	
 	private LocalDate departureDate;
 	
@@ -39,16 +41,26 @@ public class Schedule {
 	
 	private HashSet<String> bookedSeats;
 	
+	@Enumerated(EnumType.STRING)
+    private FlightStatus flightStatus = FlightStatus.SCHEDULED;
+
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "flightNumber", nullable = false)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Flight flight;
 	
+	public enum FlightStatus {
+        SCHEDULED,
+        DELAYED,
+        CANCELLED,
+        COMPLETED
+    }
+	
 	public Schedule() {}
 
 	public Schedule(ScheduleRequestDTO dto, Flight flight) {
 	    this.flight = flight; 
-	    this.flightName = dto.getFlightName();
+	    this.airlineName = dto.getAirlineName();
 	    this.departureDate = dto.getDepartureDate();
 	    this.basePrice = dto.getBasePrice();
 	    this.totalSeats = dto.getTotalSeats();
@@ -80,12 +92,12 @@ public class Schedule {
 		this.id = id;
 	}
 
-	public String getFlightName() {
-		return flightName;
+	public String getAirlineName() {
+		return airlineName;
 	}
 
-	public void setFlightName(String flightName) {
-		this.flightName = flightName;
+	public void setAirlineName(String airlineName) {
+		this.airlineName = airlineName;
 	}
 
 	public LocalDate getDepartureDate() {
@@ -118,6 +130,14 @@ public class Schedule {
 
 	public void setAvailableSeats(int availableSeats) {
 		this.availableSeats = availableSeats;
+	}
+	
+	public FlightStatus getFlightStatus() {
+		return flightStatus;
+	}
+
+	public void setFlightStatus(FlightStatus flightStatus) {
+		this.flightStatus = flightStatus;
 	}
 	
 }

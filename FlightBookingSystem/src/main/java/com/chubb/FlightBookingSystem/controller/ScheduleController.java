@@ -19,7 +19,7 @@ import com.chubb.FlightBookingSystem.service.ScheduleService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/flight/airline")
+@RequestMapping("/airline")
 public class ScheduleController {
 	@Autowired
 	ScheduleService scheduleService;

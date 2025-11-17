@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 
 public class ScheduleRequestDTO {
-    private String flightName; 
+    private String airlineName; 
     private LocalDate departureDate;
     private float basePrice;
     private int totalSeats;
@@ -12,12 +12,12 @@ public class ScheduleRequestDTO {
     
     private String flightNumber;
 
-	public String getFlightName() {
-		return flightName;
+	public String getAirlineName() {
+		return airlineName;
 	}
 
-	public void setFlightName(String flightName) {
-		this.flightName = flightName;
+	public void setAirlineName(String airlineName) {
+		this.airlineName = airlineName;
 	}
 
 	public LocalDate getDepartureDate() {
