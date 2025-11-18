@@ -1,9 +1,15 @@
 package com.chubb.FlightBookingSystem.model;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 
@@ -11,29 +17,48 @@ import jakarta.validation.constraints.Min;
 public class Booking {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private String id;
+	private int id;
 	
+	@Column(unique = true, nullable = false, length = 6)
 	private String pnr;
 	
 	private boolean roundTrip;
 	
+	@Column(name="departure_schedule_id", nullable=false)
 	private int departureScheduleId;
 	
-	private int arrivalScheduleId;
+	@Column(name="return_schedule_id",nullable=true)
+	private Integer returnScheduleId=null;
+	
+	private double totalAmount;
 	
 	@Email
 	private String emailId;
 	
 	@Min(value=1)
-	private int ticketCount;
+	@Column(name = "passengers_count")
+	private int passengerCount;
+	
+	public Booking(boolean roundTrip, int departureScheduleId, Integer returnScheduleId, double totalAmount,
+			@Email String emailId, @Min(1) int passengerCount) {
+		super();
+		this.pnr = RandomStringUtils.randomAlphanumeric(6);
+		this.roundTrip = roundTrip;
+		this.departureScheduleId = departureScheduleId;
+		this.returnScheduleId = returnScheduleId;
+		this.totalAmount = totalAmount;
+		this.emailId = emailId;
+		this.passengerCount = passengerCount;
+	}
 
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
+
 
 	public String getPnr() {
 		return pnr;
@@ -59,12 +84,12 @@ public class Booking {
 		this.departureScheduleId = departureScheduleId;
 	}
 
-	public int getArrivalScheduleId() {
-		return arrivalScheduleId;
+	public Integer getReturnScheduleId() {
+		return returnScheduleId;
 	}
 
-	public void setArrivalScheduleId(int arrivalScheduleId) {
-		this.arrivalScheduleId = arrivalScheduleId;
+	public void setReturnScheduleId(Integer returnScheduleId) {
+		this.returnScheduleId = returnScheduleId;
 	}
 
 	public String getEmailId() {
@@ -75,11 +100,19 @@ public class Booking {
 		this.emailId = emailId;
 	}
 
-	public int getTicketCount() {
-		return ticketCount;
+	public double getTotalAmount() {
+		return totalAmount;
 	}
 
-	public void setTicketCount(int ticketCount) {
-		this.ticketCount = ticketCount;
+	public void setTotalAmount(double totalAmount) {
+		this.totalAmount = totalAmount;
+	}
+
+	public int getPassengerCount() {
+		return passengerCount;
+	}
+
+	public void setPassengerCount(int passengerCount) {
+		this.passengerCount = passengerCount;
 	}
 }

@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashSet;
+import java.util.Set;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -11,6 +12,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import com.chubb.FlightBookingSystem.dto.ScheduleRequestDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -39,7 +41,8 @@ public class Schedule {
 	
 	private int availableSeats;
 	
-	private HashSet<String> bookedSeats;
+	@ElementCollection
+	private Set<String> bookedSeats=new HashSet<>();;
 	
 	@Enumerated(EnumType.STRING)
     private FlightStatus flightStatus = FlightStatus.SCHEDULED;
@@ -65,14 +68,15 @@ public class Schedule {
 	    this.basePrice = dto.getBasePrice();
 	    this.totalSeats = dto.getTotalSeats();
 	    this.availableSeats = dto.getAvailableSeats();
-	    this.bookedSeats = new HashSet<>();
 	}
 
-	public HashSet<String> getBookedSeats() {
+	
+
+	public Set<String> getBookedSeats() {
 		return bookedSeats;
 	}
 
-	public void setBookedSeats(HashSet<String> bookedSeats) {
+	public void setBookedSeats(Set<String> bookedSeats) {
 		this.bookedSeats = bookedSeats;
 	}
 

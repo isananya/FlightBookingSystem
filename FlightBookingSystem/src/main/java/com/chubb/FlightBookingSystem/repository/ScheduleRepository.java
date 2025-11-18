@@ -2,6 +2,7 @@ package com.chubb.FlightBookingSystem.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,6 +16,8 @@ import com.chubb.FlightBookingSystem.model.Schedule;
 public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
 	boolean existsByFlight(Flight flight);
 	boolean existsByDepartureDate(LocalDate departureDate);
+	boolean existsById(int id);
+	Schedule findById(int id);
 	
 	@Query("SELECT s FROM Schedule s "+
 			"WHERE s.flight.sourceAirport = :src "+
@@ -29,4 +32,9 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
 			@Param("date") LocalDate travelDate,
 			@Param("passengerCount") int passengerCount
 	);
+	@Query("SELECT count(s) FROM Schedule s WHERE s.id = :scheduleId AND :seatNumber MEMBER OF s.bookedSeats")
+    int isSeatBooked(
+    		@Param("scheduleId") int scheduleId, 
+    		@Param("seatNumber") String seatNumber
+    );
 }
