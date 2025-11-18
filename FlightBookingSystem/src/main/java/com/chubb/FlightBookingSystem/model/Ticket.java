@@ -42,6 +42,8 @@ public class Ticket {
 	@Enumerated(EnumType.STRING)
 	private TicketStatus status = TicketStatus.CONFIRMED;
 	
+	private int scheduleId;
+	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "booking_id", nullable = false)
 	@OnDelete(action = OnDeleteAction.CASCADE)
@@ -64,8 +66,12 @@ public class Ticket {
 	}
 
 	
+	public Ticket() {
+		super();
+	}
+
 	public Ticket(@NotBlank String firstName, String lastName, @Min(0) int age, Gender gender, String seatNumber,
-			MealOption mealOption, Booking booking) {
+			MealOption mealOption,int scheduleId, Booking booking) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -74,6 +80,7 @@ public class Ticket {
 		this.seatNumber = seatNumber;
 		this.mealOption = mealOption;
 		this.booking = booking;
+		this.scheduleId = scheduleId;
 	}
 
 	public int getId() {
@@ -146,5 +153,13 @@ public class Ticket {
 
 	public void setStatus(TicketStatus status) {
 		this.status = status;
+	}
+
+	public int getScheduleId() {
+		return scheduleId;
+	}
+
+	public void setScheduleId(int scheduleId) {
+		this.scheduleId = scheduleId;
 	}
 }

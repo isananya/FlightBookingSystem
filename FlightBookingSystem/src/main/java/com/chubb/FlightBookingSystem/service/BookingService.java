@@ -81,13 +81,6 @@ public class BookingService {
 		Schedule departureSchedule = scheduleRepository.findById(request.getDepartureScheduleId());
 		departureSchedule.setAvailableSeats(departureSchedule.getAvailableSeats()-request.getPassengerCount());
 		
-		
-		
-		Schedule returnSchedule = scheduleRepository.findById(request.getReturnScheduleId())
-		        .orElseThrow(() -> new ScheduleNotFoundException(request.getReturnScheduleId()));
-		returnSchedule.setAvailableSeats(returnSchedule.getAvailableSeats()-request.getPassengerCount());
-	
-		
 		for(TicketRequestDTO passenger: passengers) {
 			Ticket ticket = new Ticket(
 					passenger.getFirstName(),
@@ -96,32 +89,41 @@ public class BookingService {
 					passenger.getGender(),
 					passenger.getDepartureSeatNumber(),
 					passenger.getMealOption(),
+					request.getDepartureScheduleId(),
 					booking
 			);
 			
 			departureSchedule.getBookedSeats().add(passenger.getDepartureSeatNumber());
 			
 			ticketRepository.save(ticket);
+		}
+		
+		scheduleRepository.save(departureSchedule);
+		
+		if(request.isRoundTrip()) {
+			Schedule returnSchedule = scheduleRepository.findById(request.getReturnScheduleId())
+			        .orElseThrow(() -> new ScheduleNotFoundException(request.getReturnScheduleId()));
+			returnSchedule.setAvailableSeats(returnSchedule.getAvailableSeats()-request.getPassengerCount());
 			
-			if(request.isRoundTrip() && request.getReturnScheduleId() != null) {
-				ticket = new Ticket(
+			for(TicketRequestDTO passenger: passengers) {
+				Ticket ticket = new Ticket(
 						passenger.getFirstName(),
 						passenger.getLastName(),
 						passenger.getAge(),
 						passenger.getGender(),
 						passenger.getReturnSeatNumber(),
 						passenger.getMealOption(),
+						request.getReturnScheduleId(),
 						booking
 				);
 				
 				returnSchedule.getBookedSeats().add(passenger.getReturnSeatNumber());
 
 				ticketRepository.save(ticket);
+				
 			}
+			scheduleRepository.save(returnSchedule);
 		}
-		
-		scheduleRepository.save(departureSchedule);
-		scheduleRepository.save(returnSchedule);
 		
 		return booking.getPnr();
 		

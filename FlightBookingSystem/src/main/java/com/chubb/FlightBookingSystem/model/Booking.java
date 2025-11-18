@@ -39,6 +39,11 @@ public class Booking {
 	@Column(name = "passengers_count")
 	private int passengerCount;
 	
+	
+	public Booking() {
+		super();
+	}
+
 	public Booking(boolean roundTrip, int departureScheduleId, Integer returnScheduleId, double totalAmount,
 			@Email String emailId, @Min(1) int passengerCount) {
 		super();
