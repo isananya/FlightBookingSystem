@@ -1,6 +1,8 @@
 package com.chubb.FlightBookingSystem.service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.chubb.FlightBookingSystem.dto.BookingRequestDTO;
 import com.chubb.FlightBookingSystem.dto.TicketRequestDTO;
+import com.chubb.FlightBookingSystem.dto.TicketResponseDTO;
+import com.chubb.FlightBookingSystem.exceptions.BookingNotFoundException;
 import com.chubb.FlightBookingSystem.exceptions.ScheduleNotFoundException;
 import com.chubb.FlightBookingSystem.exceptions.SeatNotAvailableException;
 import com.chubb.FlightBookingSystem.model.Booking;

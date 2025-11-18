@@ -1,5 +1,6 @@
 package com.chubb.FlightBookingSystem.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,4 +57,41 @@ public class TicketService {
             }).toList();
         return response;
     }
+    
+    public List<TicketResponseDTO> getTicketsByEmail(String emailId) {
+	    List<Booking> bookings = bookingRepository.findByEmailId(emailId);
+	    if (bookings.isEmpty()) {
+	        throw new BookingNotFoundException(emailId);
+	    }
+
+	    List<Ticket> tickets = new ArrayList<>();
+	    for (Booking booking : bookings) {
+	        tickets.addAll(ticketRepository.findByBooking(booking));
+	    }
+
+	    List<TicketResponseDTO> response = tickets.stream()
+	        .map(t -> {
+	            Schedule schedule = null;
+	            
+                schedule = scheduleRepository.findById(t.getScheduleId());
+
+	            return new TicketResponseDTO(
+	                t.getFirstName(),
+	                t.getLastName(),
+	                t.getAge(),
+	                t.getGender(),
+	                t.getSeatNumber(),
+	                t.getMealOption(),
+	                t.getStatus(),
+	                schedule != null ? schedule.getDepartureDate() : null,
+	                schedule != null ? schedule.getFlight().getSourceAirport() : null,
+	                schedule != null ? schedule.getFlight().getDestinationAirport() : null,
+	                schedule != null ? schedule.getFlight().getDepartureTime() : null,
+	                schedule != null ? schedule.getFlight().getArrivalTime() : null
+	            );
+	        })
+	        .toList();
+
+	    return response;
+	}
 }
