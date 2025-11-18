@@ -1,5 +1,7 @@
 package com.chubb.FlightBookingSystem.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +19,7 @@ import com.chubb.FlightBookingSystem.exceptions.SeatNotAvailableException;
 import com.chubb.FlightBookingSystem.model.Booking;
 import com.chubb.FlightBookingSystem.model.Schedule;
 import com.chubb.FlightBookingSystem.model.Ticket;
+import com.chubb.FlightBookingSystem.model.Ticket.TicketStatus;
 import com.chubb.FlightBookingSystem.repository.BookingRepository;
 import com.chubb.FlightBookingSystem.repository.ScheduleRepository;
 import com.chubb.FlightBookingSystem.repository.TicketRepository;
@@ -132,4 +135,37 @@ public class BookingService {
 		return booking.getPnr();
 		
 	}
+	
+	@Transactional
+	public void cancelBooking(String pnr) {
+	    Booking booking = bookingRepository.findByPnr(pnr)
+	            .orElseThrow(() -> new BookingNotFoundException(pnr));
+
+	    List<Ticket> tickets = ticketRepository.findByBooking(booking);
+	    
+	    for (Ticket ticket : tickets) {
+	        Schedule schedule = scheduleRepository.findById(ticket.getScheduleId());
+	        if (schedule.getDepartureDate().isBefore(LocalDate.now().plusDays(1))) {
+	            throw new RuntimeException(
+	                "Cannot cancel ticket " + ticket.getSeatNumber() + 
+	                " for schedule " + schedule.getId() + 
+	                ". Cancellation allowed only 24+ hours before departure."
+	            );
+	        }
+	    }
+	    
+	    for (Ticket ticket : tickets) {
+	    	ticket.setStatus(TicketStatus.CANCELLED);
+	        ticketRepository.save(ticket);
+	        
+	        Schedule schedule = scheduleRepository.findById(ticket.getScheduleId());
+	        schedule.setAvailableSeats(schedule.getAvailableSeats() + 1);
+	        schedule.getBookedSeats().remove(ticket.getSeatNumber());
+	        scheduleRepository.save(schedule);
+	    }
+
+	    booking.setTotalAmount(0); 
+	    bookingRepository.save(booking);
+	}
+
 }
