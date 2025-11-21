@@ -84,11 +84,12 @@ public class ScheduleService {
         
         if (request.isRoundTrip() && request.getReturnDate() != null) {
 	        List<Schedule> returnSchedules = scheduleRepository.findFlights(
-	                request.getSourceAirport(),
 	                request.getDestinationAirport(),
+	                request.getSourceAirport(),
 	                request.getReturnDate(),
 	                request.getPassengerCount()
 	        );
+	  
 	        
 	        List<ScheduleResponseDTO> returnResults = returnSchedules.stream()
 					.map(this::mapToResponseDTO)

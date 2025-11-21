@@ -45,8 +45,6 @@ public class BookingController {
 	@DeleteMapping("/cancel/{pnr}")
 	public ResponseEntity<String> cancelBooking(@PathVariable String pnr) {
 	    bookingService.cancelBooking(pnr);
-	    return ResponseEntity.ok("Booking with PNR " + pnr + " has been cancelled.");
+	    return ResponseEntity.ok("");
 	}
-
-
 }
